@@ -114,6 +114,19 @@ lark-cli task +reminder --task-id <guid> --set 1d --as user
 建成后把返回的 `base_token` / `table_id` / `calendar_id` 写入 `config.json`（脚本会提示）。
 已有板块想复用：把 token 填进 `config.json` 即可，脚本不会重复建。
 
+## 场景：Canvas 作业同步（学校 LMS）
+
+当用户说「同步 Canvas 作业」「把作业排到飞书」时使用。Canvas 的 **iCalendar Feed 不需要 token**（学校关闭自助 token 也能用）：
+
+1. 让用户提供 Feed 链接：Canvas → 左侧 **Calendar** → 右侧栏 **Calendar Feed** → 复制 `.ics` 链接。
+2. 生成计划：
+   ```bash
+   "$PY" scripts/ics_sync.py --url "<ics链接>" --project "学业" --days 60 --out plan_ics.json
+   ```
+   规则：自动跳过每周重复课程（RRULE）和过期作业；紧急度按距今天数推导（≤2 天 P0 / ≤7 天 P1 / ≤14 天 P2 / 其余 P3）。
+3. 预览给用户看 → `sync.py --plan plan_ics.json --apply`。
+   重跑是安全的：按标题查重，已存在的作业会更新而不是重复创建。
+
 ## 文件结构
 
 ```
@@ -127,5 +140,7 @@ feishu-work-planner/
 └── scripts/
     ├── intake.py                  自然语言/参数 → 结构化 JSON
     ├── sync.py                    结构化 JSON → 飞书（默认 dry-run）
-    └── init_board.py              一键搭建板块（表/视图/仪表盘）
+    ├── init_board.py              一键搭建板块（表/视图/仪表盘）
+    ├── ics_sync.py                Canvas/iCal 订阅源 → 结构化 JSON
+    └── lark.py                    lark-cli 调用封装
 ```
