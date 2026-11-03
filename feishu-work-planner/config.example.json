@@ -1,0 +1,10 @@
+{
+  "base_token": "<init_board.py 运行后自动填充>",
+  "table_id": "<init_board.py 运行后自动填充>",
+  "table_name": "任务台账",
+  "calendar_id": "primary",
+  "timezone": "Asia/Shanghai",
+  "projects": ["WindSinger 硬件", "学业", "实习/求职", "个人", "其他"],
+  "field_map": {},
+  "note": "field_map 可覆盖默认字段名映射，例如 {\"title\": \"任务标题\"}；留空则用 board-blueprint.md 的默认中文字段名。"
+}
